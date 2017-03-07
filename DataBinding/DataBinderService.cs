@@ -15,21 +15,31 @@ namespace DataBinding
             {"double", typeof(double)}
         };
 
-        public List<DataTypeMap> dataTypeMap = new List<DataTypeMap>();
-        public List<PseudoData> defaultData = new List<PseudoData>();
+        private List<DataTypeMap> dataTypeMap = new List<DataTypeMap>();
+        private List<PseudoData> defaultData = new List<PseudoData>();
+
+        private bool initialized = false;
 
         public DataBinderService AddTypeMap(Dictionary<string, Type> payload)
         {
+            if (initialized)
+            {
+                Console.WriteLine("[DataBinderService] System already initialized and cannot add payloads, please do this before the service setups");
+                return this;
+            }
+
             foreach (var payloadPart in payload)
                 if (!typeMap.ContainsKey(payloadPart.Key))
                     typeMap.Add(payloadPart.Key, payloadPart.Value);
             return this;
         }
 
-        public void Setup(IDataBindDeserializer deserializer)
+        public void Initialize(IDataBindDeserializer deserializer)
         {
             dataTypeMap = deserializer.DeserializeDataTypeMap();
             defaultData = deserializer.DeserializeDefaultData();
+
+            initialized = true;
         }
 
         public override string ToString()
