@@ -19,17 +19,6 @@ namespace DataBinding
         }
     }
 
-    public class PseudoData
-    {
-        public string branch;
-        public string json;
-
-        public override string ToString()
-        {
-            return $"branch: {branch}, json: {json}";
-        }
-    }
-
     public class DataTypeMap
     {
         public string branch;
