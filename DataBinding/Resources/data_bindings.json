@@ -9,7 +9,7 @@
 	],
 
 	"defaultData" : [
-		{"branch" : "app.control", "json" : "Project/Resources/control_config.json"},
+		{"branch" : "app.control", "json" : "Resources/control_config.json"},
 		{"branch" : "app.orientation", "value" : { "supported" : ["Portrait", "Landscape"], "locked" : false}},
 		{"branch" : "app.settings.localization", "value" : "ENG"},
 		{"branch" : "app.settings.sound.music", "value" : true}
