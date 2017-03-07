@@ -18,13 +18,13 @@ namespace DataBinding
         private List<DataTypeMap> dataTypeMap = new List<DataTypeMap>();
         private List<PseudoData> defaultData = new List<PseudoData>();
 
-        private bool initialized = false;
+        private bool initialized;
 
         public DataBinderService AddTypeMap(Dictionary<string, Type> payload)
         {
             if (initialized)
             {
-                Console.WriteLine("[DataBinderService] System already initialized and cannot add payloads, please do this before the service setups");
+                Console.WriteLine("[DataBinderService] System already initialized and cannot add payloads, please do this before the initialization.");
                 return this;
             }
 
