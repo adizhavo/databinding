@@ -28,6 +28,9 @@ namespace DataBinding
             {
                 DataTypeMap dtm = JsonConvert.DeserializeObject<DataTypeMap>(jdtm.ToString());
                 dataTypeMap.Add(dtm);
+                #if DEBUG
+                Console.WriteLine($"[NewtonsoftDataBindDeserializer] add data type map: {dtm}");
+                #endif
             }
 
             return dataTypeMap;
@@ -59,7 +62,7 @@ namespace DataBinding
                     catch (Exception e)
                     {
                         #if DEBUG
-                        Console.WriteLine($"branch: {branch} doesn\'t contain a json path, will deserialize based on the type\n");
+                        Console.WriteLine($"[NewtonsoftDataBindDeserializer] branch: {branch} doesn\'t contain a json path, will deserialize based on the type");
                         #endif
                         dataPiece = JsonConvert.DeserializeObject(token.ToString(), genericDataType);
                     }
