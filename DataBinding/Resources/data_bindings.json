@@ -1,0 +1,17 @@
+{
+	"dataTypeMap" : [
+		{"branch" : "app.control", 								"type" : "ControlData"},
+		{"branch" : "app.orientation", 						"type" : "AppOrientationData"},
+		{"branch" : "app.settings.notifications", "type" : "bool"},
+		{"branch" : "app.settings.localization", 	"type" : "string"},
+		{"branch" : "app.settings.sound.music", 	"type" : "bool"},
+		{"branch" : "app.settings.sound.soundFX",	"type" : "bool"}
+	],
+
+	"defaultData" : [
+		{"branch" : "app.control", "json" : "Project/Resources/control_config.json"},
+		{"branch" : "app.orientation", "value" : { "supported" : ["Portrait", "Landscape"], "locked" : false}},
+		{"branch" : "app.settings.localization", "value" : "ENG"},
+		{"branch" : "app.settings.sound.music", "value" : true}
+	]
+}
