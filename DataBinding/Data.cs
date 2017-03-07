@@ -2,9 +2,13 @@
 
 namespace DataBinding
 {
-    public class Data<T>
+    public class Branch
     {
         public string branch;
+    }
+
+    public class Data<T> : Branch
+    {
         public T value;
 
         public override string ToString()
