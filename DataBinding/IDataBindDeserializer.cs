@@ -5,6 +5,6 @@ namespace DataBinding
     public interface IDataBindDeserializer
     {
         List<DataTypeMap> DeserializeDataTypeMap();
-        List<PseudoData> DeserializeDefaultData();
+        List<object> DeserializeDefaultData();
     }
 }

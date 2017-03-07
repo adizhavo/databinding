@@ -1,4 +1,4 @@
-﻿using System
+﻿using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
@@ -7,11 +7,15 @@ namespace DataBinding
 {
     public class NewtonsoftDataBindDeserializer : IDataBindDeserializer
     {
-        private string json;
+        private readonly string json;
+        private readonly DataBinderService dataBinder;
+        private readonly IJsonFileLoader jsonFileLoader;
 
-        public NewtonsoftDataBindDeserializer(string json)
+        public NewtonsoftDataBindDeserializer(string json, DataBinderService dataBinder, IJsonFileLoader jsonFileLoader)
         {
             this.json = json;
+            this.dataBinder = dataBinder;
+            this.jsonFileLoader = jsonFileLoader;
         }
 
         public List<DataTypeMap> DeserializeDataTypeMap()
@@ -29,33 +33,42 @@ namespace DataBinding
             return dataTypeMap;
         }
 
-        public List<PseudoData> DeserializeDefaultData()
+        public List<object> DeserializeDefaultData()
         {
-            List<PseudoData> defaultData = new List<PseudoData>();
+            List<object> data = new List<object>();
 
             JObject defaultDataConfig = JObject.Parse(json);
             JEnumerable<JToken> defaultDataToken = defaultDataConfig["defaultData"].Children();
-            foreach (JToken token in defaultDataToken)
+            foreach (var token in defaultDataToken)
             {
                 JObject dataObject = JObject.Parse(token.ToString());
-                PseudoData data = new PseudoData();
-                data.branch = dataObject["branch"].ToString();
+                string branch = dataObject["branch"].ToString();
+                Type dataType = dataBinder.GetDataType(branch);
 
-                try
+                if (dataType != null)
                 {
-                    data.json = dataObject["json"].ToString();
-                }
-                catch (Exception e)
-                {
-                    #if DEBUG
-                    Console.WriteLine($"\nbranch: {data.branch} doesn\'t contain a json path\n");
-                    #endif
-                }
+                    object dataPiece = null;
+                    Type genericDataType = typeof(Data<>).MakeGenericType(dataType);
 
-                defaultData.Add(data);
+                    try
+                    {
+                        string jsonPath = dataObject["json"].ToString();
+                        dataPiece = JsonConvert.DeserializeObject(jsonFileLoader.GetJsonFrom(jsonPath), genericDataType);
+                        ((Branch) dataPiece).branch = branch;
+                    }
+                    catch (Exception e)
+                    {
+                        #if DEBUG
+                        Console.WriteLine($"branch: {branch} doesn\'t contain a json path, will deserialize based on the type\n");
+                        #endif
+                        dataPiece = JsonConvert.DeserializeObject(token.ToString(), genericDataType);
+                    }
+
+                    data.Add(dataPiece);
+                }
             }
 
-            return defaultData;
+            return data;
         }
     }
 }
