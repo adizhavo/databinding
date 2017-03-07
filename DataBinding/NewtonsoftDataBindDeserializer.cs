@@ -48,7 +48,7 @@ namespace DataBinding
                 catch (Exception e)
                 {
                     #if DEBUG
-                    Console.Write($"\nbranch: {data.branch} doesn\'t contain a json path\n");
+                    Console.WriteLine($"\nbranch: {data.branch} doesn\'t contain a json path\n");
                     #endif
                 }
 
