@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 
@@ -6,7 +7,7 @@ namespace DataBinding
 {
     public class DataBinderService
     {
-        private Dictionary<string, Type> typeMap = new Dictionary<string, Type>()
+        private readonly Dictionary<string, Type> typeMap = new Dictionary<string, Type>()
         {
             {"int", typeof(int)},
             {"bool", typeof(bool)},
@@ -16,7 +17,7 @@ namespace DataBinding
         };
 
         private List<DataTypeMap> dataTypeMap = new List<DataTypeMap>();
-        private List<PseudoData> defaultData = new List<PseudoData>();
+        private List<object> data = new List<object>();
 
         private bool initialized;
 
@@ -36,10 +37,33 @@ namespace DataBinding
 
         public void Initialize(IDataBindDeserializer deserializer)
         {
+            LogState(0);
             dataTypeMap = deserializer.DeserializeDataTypeMap();
-            defaultData = deserializer.DeserializeDefaultData();
-
+            LogState(1);
+            data = deserializer.DeserializeDefaultData();
+            LogState(2);
+            // set up the rest of the data
+            LogState(3);
             initialized = true;
+        }
+
+        public Type GetDataType(string branch)
+        {
+            if (dataTypeMap == null || dataTypeMap.Count == 0)
+                throw new Exception("[DataBinderService] the data type map is not initialized or empty, please set up the configuration json");
+
+            foreach (var dtm in dataTypeMap)
+                if (dtm.branch.Equals(branch))
+                {
+                    if (typeMap.ContainsKey(dtm.type))
+                    {
+                        return typeMap.First(p => typeMap.Comparer.Equals(p.Key, dtm.type)).Value;
+                    }
+
+                    throw new Exception($"[DataBinderService] the requested branch: {branch} doesn\'t have the data type defined, will return null");
+                }
+
+            return null;
         }
 
         public override string ToString()
@@ -47,14 +71,37 @@ namespace DataBinding
             StringBuilder sb = new StringBuilder("dataTypeMap:\n");
 
             foreach (var dtm in dataTypeMap)
-                sb.Append(dtm.ToString() + "\n");
+                sb.Append(dtm + "\n");
 
-            sb.Append("defaultData:\n");
+            sb.Append("\ndefaultData:\n");
 
-            foreach (var df in defaultData)
-                sb.Append(df.ToString() + "\n");
+            foreach (var d in data)
+                sb.Append(d + "\n");
 
             return sb.ToString();
+        }
+
+        private void LogState(int step)
+        {
+            #if DEBUG
+            switch (step)
+            {
+                case 0:
+                    Console.WriteLine("[DataBinderService] starting loading the data type map.");
+                    break;
+                case 1:
+                    Console.WriteLine("[DataBinderService] data type map loaded.");
+                    Console.WriteLine("[DataBinderService] starting loading the default data.");
+                    break;
+                case 2:
+                    Console.WriteLine("[DataBinderService] default data loaded.");
+                    Console.WriteLine("[DataBinderService] settings up the remaining data.");
+                    break;
+                case 3:
+                    Console.WriteLine("[DataBinderService] the service is ready to go.");
+                    break;
+            }
+            #endif
         }
     }
 }
