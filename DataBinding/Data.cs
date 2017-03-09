@@ -13,9 +13,7 @@ namespace DataBinding
 
         public override string ToString()
         {
-            StringBuilder text = new StringBuilder($"\nbranch: {branch}");
-            text.Append($"\nvalue: {value.ToString()}");
-            return text.ToString();
+            return $"\nbranch: {branch}, value: {value}";
         }
     }
 
@@ -26,7 +24,7 @@ namespace DataBinding
 
         public override string ToString()
         {
-            return $"branch: {branch}, type: {type}";
+            return $"\nbranch: {branch}, type: {type}";
         }
     }
 }
