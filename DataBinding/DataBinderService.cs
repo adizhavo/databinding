@@ -37,6 +37,9 @@ namespace DataBinding
 
         public void Initialize(IDataBindDeserializer deserializer)
         {
+            if (initialized)
+                return;
+
             LogState(0);
             dataTypeMap = deserializer.DeserializeDataTypeMap();
             LogState(1);
@@ -60,9 +63,10 @@ namespace DataBinding
                         return typeMap.First(p => typeMap.Comparer.Equals(p.Key, dtm.type)).Value;
                     }
 
-                    throw new Exception($"[DataBinderService] the requested branch: {branch} doesn\'t have the data type defined, will return null");
+                    throw new Exception($"[DataBinderService] the requested branch: {branch} doesn\'t have the data type defined");
                 }
 
+            Console.WriteLine($"the branch {branch} is not configured in the data bind service");
             return null;
         }
 
@@ -71,12 +75,12 @@ namespace DataBinding
             StringBuilder sb = new StringBuilder("dataTypeMap:\n");
 
             foreach (var dtm in dataTypeMap)
-                sb.Append(dtm + "\n");
+                sb.Append(dtm);
 
             sb.Append("\ndefaultData:\n");
 
             foreach (var d in data)
-                sb.Append(d + "\n");
+                sb.Append(d);
 
             return sb.ToString();
         }
