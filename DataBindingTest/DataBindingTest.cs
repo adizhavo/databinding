@@ -18,15 +18,15 @@ namespace DataBindingTest
         [Test()]
         public void TestAdditionOfSingleData()
         {
-            dataBinding.AddDataNode<bool>("test.bool");
+            dataBinding.AddData<bool>("test.bool");
             Assert.IsTrue(dataBinding.ContainsNode("test.bool"));
         }
 
         [Test()]
         public void TestAdditionOfMultipleData()
         {
-            dataBinding.AddDataNode<bool>("test.bool");
-            dataBinding.AddDataNode<string>("test.string");
+            dataBinding.AddData<bool>("test.bool");
+            dataBinding.AddData<string>("test.string");
 
             Assert.IsTrue(dataBinding.ContainsNode("test.bool") && dataBinding.ContainsNode("test.string"));
         }
@@ -34,7 +34,7 @@ namespace DataBindingTest
         [Test()]
         public void TestAdditionOfSingleDefaultData()
         {
-            dataBinding.AddDataNode<bool>("test.bool", true);
+            dataBinding.AddData<bool>("test.bool", true);
             Assert.IsTrue(dataBinding.ContainsNode("test.bool"));
             Assert.IsFalse(dataBinding.ContainsNode("test.bool.false"));
         }
@@ -42,15 +42,15 @@ namespace DataBindingTest
         [Test()]
         public void TestCheckOfNodeBasedOnIdAndDepth()
         {
-            dataBinding.AddDataNode<bool>("test.bool.thirdLayerOfDepth", true);
-            Assert.IsTrue(dataBinding.ContainsNode("thirdLayerOfDepth", 2));
+            dataBinding.AddData<bool>("test.bool.secondLayerOfDepth", true);
+            Assert.IsTrue(dataBinding.ContainsNode("secondLayerOfDepth", 2));
         }
 
         [Test()]
         public void TestExtractionOfNode()
         {
-            dataBinding.AddDataNode<bool>("test.bool.true", true);
-            dataBinding.AddDataNode<bool>("test.bool.false");
+            dataBinding.AddData<bool>("test.bool.true", true);
+            dataBinding.AddData<bool>("test.bool.false");
 
             Assert.IsTrue(dataBinding.ExtractNode("test.bool.true") != null);
             Assert.IsTrue(dataBinding.ExtractNode("test.bool.false") != null);
@@ -60,14 +60,14 @@ namespace DataBindingTest
         [ExpectedException(typeof(ArgumentNullException))]
         public void ThrowExceptionIfAddingDataWithoutBranch()
         {
-            dataBinding.AddDataNode<bool>(string.Empty);
+            dataBinding.AddData<bool>(string.Empty);
         }
 
         [Test()]
         public void TestGettingData()
         {
-            dataBinding.AddDataNode<bool>("test.bool.true", true);
-            dataBinding.AddDataNode<bool>("test.bool.false");
+            dataBinding.AddData<bool>("test.bool.true", true);
+            dataBinding.AddData<bool>("test.bool.false");
 
             Assert.IsTrue(dataBinding.GetData<bool>("test.bool.true").value);
             Assert.IsFalse(dataBinding.GetData<bool>("test.bool.false").value);

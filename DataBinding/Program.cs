@@ -21,12 +21,12 @@ namespace DataBinding
 
             // Create the data binding and add data with dedault values
             var dataBinding = new DataBindingService()
-                .AddDataNode<bool>("app.settings.notifications", true)
-                .AddDataNode<bool>("app.settings.notifications.hasSound", true)
-                .AddDataNode<bool>("app.settings.sound.music", true)
-                .AddDataNode<bool>("app.settings.sound.FX", true)
-                .AddDataNode<ControlData>("app.control", control)
-                .AddDataNode<AppOrientationData>("app.settings.orientation", appOrientation);
+                .AddData<bool>("app.settings.notifications", true)
+                .AddData<bool>("app.settings.notifications.hasSound", true)
+                .AddData<bool>("app.settings.sound.music", true)
+                .AddData<bool>("app.settings.sound.FX", true)
+                .AddData<ControlData>("app.control", control)
+                .AddData<AppOrientationData>("app.settings.orientation", appOrientation);
 
             Console.WriteLine(dataBinding.ToString());
             Console.WriteLine("End of program");
