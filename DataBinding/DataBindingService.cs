@@ -10,6 +10,13 @@ namespace DataBinding
 
         public List<Node> dataRoots = new List<Node>();
 
+        /// <summary>
+        /// Adds data to the data tree as a node
+        /// </summary>
+        /// <param name="branch">Branch.</param>
+        /// <param name="defaultValue">Default value.</param>
+        /// <param name="overrideData">If set to <c>true</c> overrides the data on that branch.</param>
+        /// <typeparam name="T">The data type.</typeparam>
         public DataBindingService AddDataNode<T>(string branch, T defaultValue = default(T), bool overrideData = false)
         {
             if (string.IsNullOrEmpty(branch))
@@ -27,6 +34,10 @@ namespace DataBinding
             return this;
         }
 
+        /// <summary>
+        /// Adds and creates the branch if no data branch is defined
+        /// Overrides the data if the data branch is defined
+        /// </summary>
         private void AddOrOverrideNodeToDataTree(Node insertion, string branch, string[] splittedBranch, bool overrideData)
         {
             var extracted = ExtractNode(insertion.branch);
@@ -48,8 +59,11 @@ namespace DataBinding
 
         private void AddNodeToDataTree(Node insertion, string[] splittedBranch)
         {
+            // creates the data branch piece by piece and adds empty nodes
             var branch = new StringBuilder();
 
+            // loops not to the end, this loop will fill with empty nodes 
+            // the actual data will be added as a sub node at the end
             for (int treeDepth = 0; treeDepth < splittedBranch.Length - 1; treeDepth++)
             {
                 branch.Append(splittedBranch[treeDepth]);
@@ -62,6 +76,7 @@ namespace DataBinding
                     branch.Append(DATA_BRANCH_SEPARATOR);
             }
 
+            // Add the data as a subNode to the parent branch
             var parent = ExtractNode(branch.ToString());
             parent.AddSubNode(insertion);
         }
@@ -73,6 +88,7 @@ namespace DataBinding
             node.Id = splittedBranch[treeDepth];
             node.treeDepth = treeDepth;
 
+            // We are adding it as a root
             if (treeDepth == 0)
             {
                 #if DEBUG
@@ -100,6 +116,9 @@ namespace DataBinding
             return ExtractNode(branch) != null;
         }
 
+        /// <summary>
+        /// Extracts node from a specific branch
+        /// </summary>
         public Node ExtractNode(string branch)
         {
             if (!string.IsNullOrEmpty(branch))
@@ -115,7 +134,9 @@ namespace DataBinding
             return null;
         }
 
-
+        /// <summary>
+        /// Extracts nodes from its Id and depth in the data tree
+        /// </summary>
         public Node ExtractNode(string Id, int treeDepth)
         {
             if (!string.IsNullOrEmpty(Id))
@@ -132,6 +153,9 @@ namespace DataBinding
             return null;
         }
 
+        /// <summary>
+        /// Extracts a collections of nodes out of a tree of nodes based on the depth
+        /// </summary>
         public List<Node> ExtractNodes(List<Node> parents, int treeDepth)
         {
             List<Node> extractedNodes = new List<Node>();

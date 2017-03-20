@@ -5,8 +5,11 @@ namespace DataBinding
 {
     public class Node
     {
+        // considered the last part of the branch
         public string Id;
+        // the depth of this node in the tree
         public int treeDepth;
+        // full branch 
         public string branch;
 
         public Node parent;
