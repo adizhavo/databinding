@@ -17,7 +17,7 @@ namespace DataBinding
         /// <param name="defaultValue">Default value.</param>
         /// <param name="overrideData">If set to <c>true</c> overrides the data on that branch.</param>
         /// <typeparam name="T">The data type.</typeparam>
-        public DataBindingService AddDataNode<T>(string branch, T defaultValue = default(T), bool overrideData = false)
+        public DataBindingService AddData<T>(string branch, T defaultValue = default(T), bool overrideData = false)
         {
             if (string.IsNullOrEmpty(branch))
                 throw new ArgumentNullException(branch, "Branch is null or empty, please provide a branch");
@@ -32,6 +32,11 @@ namespace DataBinding
 
             AddOrOverrideNodeToDataTree(data, branch, splittedBranch, overrideData);
             return this;
+        }
+
+        public Data<T> GetData<T>(string branch)
+        {
+            return ExtractNode(branch) as Data<T>;
         }
 
         /// <summary>
@@ -176,11 +181,6 @@ namespace DataBinding
             }
 
             return extractedNodes;
-        }
-
-        public Data<T> GetData<T>(string branch)
-        {
-            return ExtractNode(branch) as Data<T>;
         }
     }
 }
