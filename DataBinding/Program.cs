@@ -1,7 +1,9 @@
-﻿using System;
+﻿#define DATABINDING_MAIN
+using System;
 
 namespace DataBinding
 {
+    #if DATABINDING_MAIN
     class MainClass
     {
         public static void Main(string[] args)
@@ -52,4 +54,5 @@ namespace DataBinding
             return $"{base.ToString()}, supported: {supported.Length}, locked: {locked}";
         }
     }
+    #endif
 }

@@ -144,6 +144,10 @@ namespace DataBinding
                 foreach(var node in ExtractNodes(dataRoots, treeDepth))
                     if (node.Id.Equals(Id))
                         return node;
+
+                #if DEBUG
+                Console.WriteLine($"[DataBindingService] node with id: {Id} was not found");
+                #endif
             }
             #if DEBUG
             else 
@@ -172,6 +176,11 @@ namespace DataBinding
             }
 
             return extractedNodes;
+        }
+
+        public Data<T> GetData<T>(string branch)
+        {
+            return ExtractNode(branch) as Data<T>;
         }
     }
 }

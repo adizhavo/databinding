@@ -36,6 +36,14 @@ namespace DataBindingTest
         {
             dataBinding.AddDataNode<bool>("test.bool", true);
             Assert.IsTrue(dataBinding.ContainsNode("test.bool"));
+            Assert.IsFalse(dataBinding.ContainsNode("test.bool.false"));
+        }
+
+        [Test()]
+        public void TestCheckOfNodeBasedOnIdAndDepth()
+        {
+            dataBinding.AddDataNode<bool>("test.bool.thirdLayerOfDepth", true);
+            Assert.IsTrue(dataBinding.ContainsNode("thirdLayerOfDepth", 2));
         }
 
         [Test()]
@@ -53,6 +61,17 @@ namespace DataBindingTest
         public void ThrowExceptionIfAddingDataWithoutBranch()
         {
             dataBinding.AddDataNode<bool>(string.Empty);
+        }
+
+        [Test()]
+        public void TestGettingData()
+        {
+            dataBinding.AddDataNode<bool>("test.bool.true", true);
+            dataBinding.AddDataNode<bool>("test.bool.false");
+
+            Assert.IsTrue(dataBinding.GetData<bool>("test.bool.true").value);
+            Assert.IsFalse(dataBinding.GetData<bool>("test.bool.false").value);
+            Assert.IsNull(dataBinding.GetData<object>("test.nulldata"));
         }
     }
 }
