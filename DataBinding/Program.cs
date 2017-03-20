@@ -1,31 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#define DATABINDING_MAIN
+using System;
 
 namespace DataBinding
 {
+    #if DATABINDING_MAIN
     class MainClass
     {
         public static void Main(string[] args)
         {
-            // setup the json loader, can be extended to another implementation through the interface
-            IJsonFileLoader jsonLoader = new AppDomainJsonLoader();
-            string dataBindConfig = jsonLoader.GetJsonFrom("Resources/data_bindings.json");
+            // Create sample data
+            // can be loaded from json or requested from a 
+            // centralized data loader
+            var control = new ControlData();
+            control.controlType = "touch";
+            control.supportedSensors = new string[]{"Accelerometer"};
 
-            // create data type map payload since we want to load custom data structures
-            Dictionary<string, Type> dataTypeMapPayload = new Dictionary<string, Type>()
-            {
-                {"ControlData",         typeof(ControlData)},
-                {"AppOrientationData",  typeof(AppOrientationData)}
-            };
-            DataBinderService dataBinder = new DataBinderService();
-            dataBinder.AddTypeMap(dataTypeMapPayload);
+            var appOrientation = new AppOrientationData();
+            appOrientation.supported = new string[]{"LANDSCAPE"};
+            appOrientation.locked = true;
 
-            // setup the data biding from its configuration file
-            // the deserializer uses Newtonsoft Json to parse the data, can be extended to another implementation through the interface
-            IDataBindDeserializer deserializer = new NewtonsoftDataBindDeserializer(dataBindConfig, dataBinder, jsonLoader);
-            dataBinder.Initialize(deserializer);
+            // Create the data binding and add data with dedault values
+            var dataBinding = new DataBindingService()
+                .AddDataNode<bool>("app.settings.notifications", true)
+                .AddDataNode<bool>("app.settings.notifications.hasSound", true)
+                .AddDataNode<bool>("app.settings.sound.music", true)
+                .AddDataNode<bool>("app.settings.sound.FX", true)
+                .AddDataNode<ControlData>("app.control", control)
+                .AddDataNode<AppOrientationData>("app.settings.orientation", appOrientation);
 
-            Console.Write(dataBinder.ToString());
+            Console.WriteLine(dataBinding.ToString());
+            Console.WriteLine("End of program");
         }
     }
 
@@ -36,7 +40,7 @@ namespace DataBinding
 
         public override string ToString()
         {
-            return $"control type: {controlType}, supportedSensors: {supportedSensors.Length}";
+            return $"{base.ToString()}, control type: {controlType}, supportedSensors: {supportedSensors.Length}";
         }
     }
 
@@ -47,7 +51,8 @@ namespace DataBinding
 
         public override string ToString()
         {
-            return $"supported: {supported.Length}, locked: {locked}";
+            return $"{base.ToString()}, supported: {supported.Length}, locked: {locked}";
         }
     }
+    #endif
 }

@@ -1,9 +1,0 @@
-﻿{
-	"value" : {
-		"controlType" : "touch",
-		"supportedSensors" : [
-			"Accelerometer",
-			"CameraLight"
-		]
-	}
-}
