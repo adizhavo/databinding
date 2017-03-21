@@ -64,7 +64,23 @@ namespace DataBinding
 
     public class Data<T> : Node
     {
-        public T value;
+        private T _value;
+        public T value 
+        {
+            set 
+            {   _value = value; 
+                NotifyComponents(); 
+            }
+            get { return _value; }
+        }
+
+        public List<BindingComponent<T>> bindedComponents = new List<BindingComponent<T>>();
+
+        public void NotifyComponents()
+        {
+            foreach(var component in bindedComponents)
+                component.OnValueChanged(branch, value);
+        }
 
         public override string ToString()
         {
