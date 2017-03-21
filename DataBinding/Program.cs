@@ -81,9 +81,9 @@ namespace DataBinding
 
         public void OnValueChanged(string branch, bool value)
         {
-            if (branch.Equals("app.settings.sound.music"))
+            if (string.Equals("app.settings.sound.music", branch))
                 music = value;
-            else if (branch.Equals("app.settings.sound.FX"))
+            else if (string.Equals("app.settings.sound.FX", branch))
                 fx = value;
 
             // Change UI at will

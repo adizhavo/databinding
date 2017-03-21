@@ -152,7 +152,7 @@ namespace DataBinding
             if (!string.IsNullOrEmpty(Id))
             {
                 foreach(var node in ExtractNodes(dataRoots, treeDepth))
-                    if (node.Id.Equals(Id))
+                    if (string.Equals(node.Id, Id))
                         return node;
 
                 #if DEBUG
