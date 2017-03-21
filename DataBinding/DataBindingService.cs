@@ -39,6 +39,11 @@ namespace DataBinding
             return ExtractNode(branch) as Data<T>;
         }
 
+        public Data<T> GetData<T>(string Id, int treeDepth)
+        {
+            return ExtractNode(Id, treeDepth) as Data<T>;
+        }
+
         /// <summary>
         /// Adds and creates the branch if no data branch is defined
         /// Overrides the data if the data branch is defined
@@ -147,7 +152,7 @@ namespace DataBinding
             if (!string.IsNullOrEmpty(Id))
             {
                 foreach(var node in ExtractNodes(dataRoots, treeDepth))
-                    if (node.Id.Equals(Id))
+                    if (string.Equals(node.Id, Id))
                         return node;
 
                 #if DEBUG
@@ -181,6 +186,29 @@ namespace DataBinding
             }
 
             return extractedNodes;
+        }
+
+        public DataBindingService Bind<T>(string branch, BindingComponent<T> component)
+        {
+            if (!string.IsNullOrEmpty(branch))
+            {
+                string[] branchPath = branch.Split(DATA_BRANCH_SEPARATOR);
+                return Bind<T>(branchPath[branchPath.Length - 1], branchPath.Length - 1, component);
+            }
+
+            return this;
+        }
+
+        public DataBindingService Bind<T>(string Id, int treeDepth, BindingComponent<T> component)
+        {
+            var data = GetData<T>(Id, treeDepth);
+            if (data != null && !data.bindedComponents.Contains(component))
+            {
+                data.bindedComponents.Add(component);
+                component.OnValueChanged(data.branch, data.value);
+            }
+
+            return this;
         }
     }
 }
