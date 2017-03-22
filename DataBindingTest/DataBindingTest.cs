@@ -34,8 +34,8 @@ namespace DataBindingTest
         [Test()]
         public void TestAdditionOfSingleDefaultData()
         {
-            dataBinding.AddData<bool>("test.bool", true);
-            Assert.IsTrue(dataBinding.ContainsNode("test.bool"));
+            dataBinding.AddData<bool>("test.bool.true", true);
+            Assert.IsTrue(dataBinding.ContainsNode("test.bool.true"));
             Assert.IsFalse(dataBinding.ContainsNode("test.bool.false"));
         }
 
@@ -52,22 +52,22 @@ namespace DataBindingTest
             dataBinding.AddData<bool>("test.bool.true", true);
             dataBinding.AddData<bool>("test.bool.false");
 
-            Assert.IsTrue(dataBinding.ExtractNode("test.bool.true") != null);
-            Assert.IsTrue(dataBinding.ExtractNode("test.bool.false") != null);
+            Assert.IsNotNull(dataBinding.ExtractNode("test.bool.true"));
+            Assert.IsNotNull(dataBinding.ExtractNode("test.bool.false"));
         }
 
         [Test()]
         [ExpectedException(typeof(ArgumentNullException))]
         public void ThrowExceptionIfAddingDataWithoutBranch()
         {
-            dataBinding.AddData<bool>(string.Empty);
+            dataBinding.AddData<bool>(string.Empty, false);
         }
 
         [Test()]
         public void TestGettingData()
         {
             dataBinding.AddData<bool>("test.bool.true", true);
-            dataBinding.AddData<bool>("test.bool.false");
+            dataBinding.AddData<bool>("test.bool.false", false);
 
             Assert.IsTrue(dataBinding.GetData<bool>("test.bool.true").value);
             Assert.IsFalse(dataBinding.GetData<bool>("test.bool.false").value);

@@ -30,13 +30,16 @@ namespace DataBindingTest
         }
 
         [Test()]
-        public void TestReceiveChangedValue()
+        public void TestReceiveChangedDataValue()
         {
             dataBinding.AddData<bool>("bool.false", true);
             dataBinding.AddData<string>("string.notEmpty", "string");
 
             dataBinding.Bind<bool>("bool.false", bindingComponent);
             dataBinding.Bind<string>("string.notEmpty", bindingComponent);
+
+            Assert.IsTrue(bindingComponent.booleanValue);
+            Assert.IsNotEmpty(bindingComponent.stringValue);
 
             dataBinding.GetData<bool>("bool.false").value = false;
             dataBinding.GetData<string>("string.notEmpty").value = string.Empty;
