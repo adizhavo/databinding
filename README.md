@@ -22,7 +22,7 @@ var dataBinding = new DataBindingService();
 
 #### Add data
 
-Call the method ```AddData``` by providing the data type and the branch to hold it, new nodes will be created if nodes of the branch do not exists.
+Call the method ```AddData``` by providing the data type and the branch to hold it, new nodes will be created if nodes of the branch don't exists.
 
 ```C#
 dataBinding.AddData<bool>("app.settings.notifications", true)
