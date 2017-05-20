@@ -1,5 +1,5 @@
 # Databinding Service
-Databinding library that can be used to set application data and bind them to events when they change. Really useful for a heavy data oriented system.
+Databinding library can be used to set application data and bind them to events when they change. Useful for a heavy data oriented system.
 
 ## Data on a tree!
 
@@ -22,7 +22,7 @@ var dataBinding = new DataBindingService();
 
 #### Add data
 
-Call the method ```AddData``` by providing the data type and the branch to hold it, new nodes will be created if nodes of the branch don't exists.
+Call ```AddData``` by providing the data type and the a branch, new nodes will be created if nodes of the branch don't exists.
 
 ```C#
 dataBinding.AddData<bool>("app.settings.notifications", true)
@@ -32,8 +32,8 @@ dataBinding.AddData<bool>("app.settings.notifications", true)
 
 #### Binding components
 
-These components bind to a data branch and get notified if the data changes in the system.
-Implement the ```BindingComponent<T>``` interface by the specifying the data type which it will bind to.
+Components bind to a data branch and get notified if the data changes in the system.
+Implement ```BindingComponent<T>``` interface by the specifying the data type which it will bind to.
 
 ```C#
 public class SampleBindingComponent : BindingComponent<bool>
@@ -47,7 +47,7 @@ public class SampleBindingComponent : BindingComponent<bool>
 
 #### Binding data to components
 
-Call the method ```Bind<T>(branch, instance)``` by specifying the data type, the data branch and the binding component instance.
+Call ```Bind<T>(branch, instance)``` by specifying the data type, the data branch and the binding component instance.
 
 ```C#
 var sampleBindingComponent = new SampleBindingComponent();
@@ -55,11 +55,9 @@ var sampleBindingComponent = new SampleBindingComponent();
 dataBinding.Bind<bool>("app.settings.sound.music", sampleBindingComponent);
 ```
 
-Is possible to bind the same instance to different branches with the same or different data type.
-
 #### Get and modify data
 
-Call the method ```GetData<T>(string branch)``` to get an object of type ```Data<T>``` and access the its value.
+Call ```GetData<T>(string branch)``` to get an object of type ```Data<T>``` and access its value.
 
 ```C#
 var musicData = dataBinding.GetData<bool>("app.settings.sound.music");
@@ -70,8 +68,8 @@ isMusicEnabled = !isMusicEnabled;
 musicData.value = isMusicEnabled;
 ```
 
-Reassigning the value this way will notify automatically the component which are bind to this data.
-To manually notify components, on the ```Data<T>``` object call the ```NotifyComponents``` method.
+Reassigning the value will notify automatically components bind to this data.
+To manually notify components, on the ```Data<T>``` object call ```NotifyComponents```.
 ```C#
 musicData.NotifyComponents()
 ```
