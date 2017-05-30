@@ -7,7 +7,7 @@ Databinding library can be used to set application data and bind them to events 
   <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/N-ary_to_binary.svg/400px-N-ary_to_binary.svg.png"/>
 </p>
 
-Each node represent a data in this service, so for example the branch "app.settings.audio.music" corresponds to the branch "A.B.H.N" with a nodeId of "music" and depth of 3.
+Each node represent a data in this service, so for example the branch "app.settings.audio.music" corresponds to the branch "A.B.H.N", branches can be reached in the tree by nodes, depth or branch ids.
 
 The dot (.) is considered as a node separator in the system, can be changed to any char [here](https://github.com/adizhavo/databinding/blob/master/DataBinding/DataBindingService.cs)
 
