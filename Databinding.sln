@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataBinding", "DataBinding\DataBinding.csproj", "{44B8646D-5F64-4EF1-8A92-2102EA083D2F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataBindingTest", "DataBindingTest\DataBindingTest.csproj", "{7837E79B-0D55-4350-9892-57EFB5767038}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{44B8646D-5F64-4EF1-8A92-2102EA083D2F}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{44B8646D-5F64-4EF1-8A92-2102EA083D2F}.Debug|Any CPU.Build.0 = Debug|x86
+		{44B8646D-5F64-4EF1-8A92-2102EA083D2F}.Release|Any CPU.ActiveCfg = Release|x86
+		{44B8646D-5F64-4EF1-8A92-2102EA083D2F}.Release|Any CPU.Build.0 = Release|x86
+		{7837E79B-0D55-4350-9892-57EFB5767038}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7837E79B-0D55-4350-9892-57EFB5767038}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7837E79B-0D55-4350-9892-57EFB5767038}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7837E79B-0D55-4350-9892-57EFB5767038}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
