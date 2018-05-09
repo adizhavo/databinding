@@ -6,9 +6,9 @@ namespace DataBinding
 {
     public class DataBindingService
     {
-        public const char DATA_BRANCH_SEPARATOR = '.';
+        private List<Node> dataRoots = new List<Node>();
 
-        public List<Node> dataRoots = new List<Node>();
+        public const char DATA_BRANCH_SEPARATOR = '.';
 
         /// <summary>
         /// Adds data to the data tree as a node
@@ -22,26 +22,30 @@ namespace DataBinding
             if (string.IsNullOrEmpty(branch))
                 throw new ArgumentNullException(branch, "Branch is null or empty, please provide a branch");
 
-            var data = new Data<T>();
-            data.branch = branch;
-            data.value = defaultValue;
+            var data = GetData<T>(branch);
+            if (data == null)
+            {
+                data = new Data<T>();
+                data.branch = branch;
+                data.value = defaultValue;
 
-            var splittedBranch = branch.Split(DATA_BRANCH_SEPARATOR);
-            data.Id = splittedBranch[splittedBranch.Length - 1];
-            data.treeDepth = splittedBranch.Length - 1;
+                var splittedBranch = branch.Split(DATA_BRANCH_SEPARATOR);
+                data.Id = splittedBranch[splittedBranch.Length - 1];
+                data.treeDepth = splittedBranch.Length - 1;
 
-            AddOrOverrideNodeToDataTree(data, branch, splittedBranch, overrideData);
+                AddOrOverrideNodeToDataTree(data, branch, splittedBranch, overrideData);
+            }
+            else
+            {
+                data.value = defaultValue;
+            }
+
             return this;
         }
 
         public Data<T> GetData<T>(string branch)
         {
             return ExtractNode(branch) as Data<T>;
-        }
-
-        public Data<T> GetData<T>(string Id, int treeDepth)
-        {
-            return ExtractNode(Id, treeDepth) as Data<T>;
         }
 
         /// <summary>
@@ -58,10 +62,10 @@ namespace DataBinding
                     insertion.parent = extracted.parent;
                     extracted = insertion;
                 }
-                #if DEBUG
                 else
-                    Console.WriteLine($"[DataBindingService] branch {branch} found but the data will not change.");
-                #endif
+                {
+                    Console.WriteLine("[{0}] branch {1} found but the data will not change.", GetType(), branch);
+                }
             }
             else
                 AddNodeToDataTree(insertion, splittedBranch);
@@ -71,6 +75,7 @@ namespace DataBinding
         {
             // creates the data branch piece by piece and adds empty nodes
             var branch = new StringBuilder();
+            var parentBranch = string.Empty;
 
             // loops not to the end, this loop will fill with empty nodes 
             // the actual data will be added as a sub node at the end
@@ -78,11 +83,13 @@ namespace DataBinding
             {
                 branch.Append(splittedBranch[treeDepth]);
 
-                var extracted = ExtractNode(splittedBranch[treeDepth], treeDepth);
+                var extracted = ExtractNode(branch.ToString());
                 if (extracted == null)
-                    CreateEmptyNode(branch.ToString(), splittedBranch, treeDepth);
+                    CreateEmptyNode(parentBranch, branch.ToString(), splittedBranch, treeDepth);
+                
+                parentBranch = branch.ToString();
 
-                if (treeDepth != splittedBranch.Length - 2) 
+                if (treeDepth != splittedBranch.Length - 2)
                     branch.Append(DATA_BRANCH_SEPARATOR);
             }
 
@@ -91,7 +98,7 @@ namespace DataBinding
             parent.AddSubNode(insertion);
         }
 
-        private void CreateEmptyNode(string branch, string[] splittedBranch, int treeDepth)
+        private void CreateEmptyNode(string parentBranch, string branch, string[] splittedBranch, int treeDepth)
         {
             var node = new Node();
             node.branch = branch;
@@ -101,24 +108,15 @@ namespace DataBinding
             // We are adding it as a root
             if (treeDepth == 0)
             {
-                #if DEBUG
-                Console.WriteLine($"[DataDindingService] Adding an empty node {splittedBranch[treeDepth]} as root");
-                #endif
+                Console.WriteLine("[{0}] Adding an empty node {1} as root", GetType(), splittedBranch[treeDepth]);
                 dataRoots.Add(node);
             }
             else
             {
-                var parent = ExtractNode(splittedBranch[treeDepth - 1], treeDepth - 1);
-                #if DEBUG
-                Console.WriteLine($"[DataBindingService] Adding an empty node {splittedBranch[treeDepth]} with parent {parent.branch}");
-                #endif
+                var parent = ExtractNode(parentBranch);
+                Console.WriteLine("[{0}] Adding an empty node {1} with parent {2}", GetType(), splittedBranch[treeDepth], parent.branch);
                 parent.AddSubNode(node);
             }
-        }
-
-        public bool ContainsNode(string Id, int treeDepth)
-        {
-            return ExtractNode(Id, treeDepth) != null;
         }
 
         public bool ContainsNode(string branch)
@@ -134,54 +132,34 @@ namespace DataBinding
             if (!string.IsNullOrEmpty(branch))
             {
                 string[] branchPath = branch.Split(DATA_BRANCH_SEPARATOR);
-                return ExtractNode(branchPath[branchPath.Length - 1], branchPath.Length - 1);
+                var nodes = ExtractNodes(dataRoots, 0, branchPath.Length - 1, branchPath);
+                return nodes != null && nodes.Count > 0 ? nodes[nodes.Count - 1] : null;
             }
-            #if DEBUG
-            else 
-            Console.WriteLine("[DataBindingService] Error, the request is null or empty, please provide a valid branch, will return null");
-            #endif
-
-            return null;
-        }
-
-        /// <summary>
-        /// Extracts nodes from its Id and depth in the data tree
-        /// </summary>
-        public Node ExtractNode(string Id, int treeDepth)
-        {
-            if (!string.IsNullOrEmpty(Id))
-            {
-                foreach(var node in ExtractNodes(dataRoots, treeDepth))
-                    if (string.Equals(node.Id, Id))
-                        return node;
-
-                #if DEBUG
-                Console.WriteLine($"[DataBindingService] node with id: {Id} was not found");
-                #endif
-            }
-            #if DEBUG
-            else 
-            Console.WriteLine("[DataBindingService] Error, the request Id is null or empty, please provide a valid Id, will return null");
-            #endif
-
+            Console.WriteLine("[{0}] Error, the request is null or empty, please provide a valid branch, will return null", GetType());
             return null;
         }
 
         /// <summary>
         /// Extracts a collections of nodes out of a tree of nodes based on the depth
         /// </summary>
-        public List<Node> ExtractNodes(List<Node> parents, int treeDepth)
+        public List<Node> ExtractNodes(List<Node> parents, int currentDepth, int treeDepth, string[] branchPath)
         {
             List<Node> extractedNodes = new List<Node>();
 
             foreach (var node in parents)
             {
-                if (node.treeDepth == treeDepth)
-                    extractedNodes.Add(node);
-                else
+                if (node.Id == branchPath[currentDepth])
                 {
-                    List<Node> nodes = ExtractNodes(node.subNodes, treeDepth);
-                    extractedNodes.AddRange(nodes);
+                    if (node.treeDepth == treeDepth)
+                    {
+                        extractedNodes.Add(node);
+                        break;
+                    }
+                    else
+                    {
+                        List<Node> nodes = ExtractNodes(node.subNodes, currentDepth + 1, treeDepth, branchPath);
+                        extractedNodes.AddRange(nodes);
+                    }
                 }
             }
 
@@ -192,20 +170,18 @@ namespace DataBinding
         {
             if (!string.IsNullOrEmpty(branch))
             {
-                string[] branchPath = branch.Split(DATA_BRANCH_SEPARATOR);
-                return Bind<T>(branchPath[branchPath.Length - 1], branchPath.Length - 1, component);
-            }
+                var data = GetData<T>(branch);
+                if (data == null)
+                {
+                    AddData<T>(branch, default(T), true);
+                    data = GetData<T>(branch);
+                }
 
-            return this;
-        }
-
-        public DataBindingService Bind<T>(string Id, int treeDepth, BindingComponent<T> component)
-        {
-            var data = GetData<T>(Id, treeDepth);
-            if (data != null && !data.bindedComponents.Contains(component))
-            {
-                data.bindedComponents.Add(component);
-                component.OnValueChanged(data.branch, data.value);
+                if (!data.bindedComponents.Contains(component))
+                {
+                    data.bindedComponents.Add(component);
+                    component.OnValueChanged(data.branch, data.value);
+                }
             }
 
             return this;

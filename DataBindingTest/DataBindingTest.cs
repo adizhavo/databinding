@@ -40,13 +40,6 @@ namespace DataBindingTest
         }
 
         [Test()]
-        public void TestCheckOfNodeBasedOnIdAndDepth()
-        {
-            dataBinding.AddData<bool>("test.bool.secondLayerOfDepth", true);
-            Assert.IsTrue(dataBinding.ContainsNode("secondLayerOfDepth", 2));
-        }
-
-        [Test()]
         public void TestExtractionOfNode()
         {
             dataBinding.AddData<bool>("test.bool.true", true);
