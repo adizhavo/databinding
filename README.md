@@ -80,9 +80,7 @@ To better understand the system and have a quick dive in the codebase have a loo
 #### Useful methods
 
 - ```GetData<T>(string nodeId, int treeDepth)``` if you know the node and the data depth in the tree
-- ```ContainsNode(string branch)``` 
-- ```ContainsNode(string nodeId, int treeDepth)``` 
+- ```ContainsNode(string branch)```
 - ```ExtractNode(string branch)``` will return a [node object](https://github.com/adizhavo/databinding/blob/master/DataBinding/Data.cs)
-- ```ExtractNode(string nodeId, int treeDepth)```
 
 
